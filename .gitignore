@@ -12,4 +12,7 @@ node_modules/
 # Build
 dist/
 /npm-debug.log
+
+# Custom
 /OLD
+/src/tmp.js
