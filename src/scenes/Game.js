@@ -1,8 +1,10 @@
+import ceateDeck from '../helpers/createDeck';
+
 import cardsImg from '../assets/timeline-cards.png';
 
 export default class Game extends Phaser.Scene {
   constructor() {
-    super();
+    super({ key: 'Game' });
   }
 
   preload() {
@@ -10,15 +12,11 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    const logo = this.add.sprite(100, 100, 'cards', 3)
+    let nbPlayers = 2;
+    let cardsDeck = ceateDeck();
 
-    this.tweens.add({
-      targets: logo,
-      y: 450,
-      duration: 2000,
-      ease: "Power2",
-      yoyo: true,
-      loop: -1
+    cardsDeck.forEach((card, index) => {
+      this.add.sprite(100 + index*130, 100, 'cards', card.id);
     });
   }
 }
