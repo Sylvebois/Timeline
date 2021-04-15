@@ -1,5 +1,4 @@
-import createDeck from '../helpers/createDeck';
-
+import CardsManager from '../helpers/CardsManager';
 import cardsImg from '../assets/timeline-cards.png';
 
 export default class Game extends Phaser.Scene {
@@ -14,18 +13,18 @@ export default class Game extends Phaser.Scene {
   create() {
     let nbPlayers = 2;
 
-    let cardsDeck = createDeck();
+    // Intialize the data
+    let cardsManager = new CardsManager(this);
+
+    let cardsDeck = cardsManager.createDeck();
     let cardsTrash = [];
-    let playersHand = new Array(nbPlayers).fill(null).map(elem => elem = []);
+    let playersHand = cardsManager.initialDeal(nbPlayers, cardsDeck);
 
-    // Give 4 cards to each player
-    for (let i = cardsDeck.length - 1, nbLoops = nbPlayers * 4; nbLoops > 0; i--, nbLoops--) {
-      let player = i % nbPlayers;
-      playersHand[player].push(cardsDeck[i]);
-      cardsDeck.pop();
-    }
-
+    // Draw the game and add events
     cardsDeck.forEach((card, cardIndex) => card.img = this.add.sprite(10 + cardIndex * 2, this.game.config.height / 3, 'cards', card.id).setOrigin(0, 0.5));
+   
+    let deckZone = this.add.zone(10, this.game.config.height / 3, 128, 176).setInteractive();
+
     let trashZone = this.add.graphics();
     trashZone.lineStyle(4, 0xff0000);
     trashZone.strokeRoundedRect(10, this.game.config.height * 2 / 3, 128, 176, 15);
@@ -55,6 +54,13 @@ export default class Game extends Phaser.Scene {
         })
       });
     })
+
+    deckZone.on('pointerdown', () => {
+      if(!cardsDeck.length) {
+        cardsManager.fillDeck(cardsDeck, cardsTrash);
+      }
+      cardsManager.dealCard(playersHand[0],cardsDeck)
+    });
   }
 
   update() {
