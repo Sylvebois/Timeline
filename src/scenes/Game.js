@@ -25,17 +25,39 @@ export default class Game extends Phaser.Scene {
       cardsDeck.pop();
     }
 
-    cardsDeck.forEach((card, cardIndex) => card.img = this.add.sprite(10 + cardIndex * 2, this.game.config.height / 2, 'cards', card.id).setOrigin(0, 0.5));
+    cardsDeck.forEach((card, cardIndex) => card.img = this.add.sprite(10 + cardIndex * 2, this.game.config.height / 3, 'cards', card.id).setOrigin(0, 0.5));
+    let trashZone = this.add.graphics();
+    trashZone.lineStyle(4, 0xff0000);
+    trashZone.strokeRoundedRect(10, this.game.config.height * 2 / 3, 128, 176, 15);
 
     playersHand.forEach((player, playerIndex) => {
-      player.forEach((card, cardIndex) => card.img = this.add.sprite(200 + cardIndex * 140, this.game.config.height - 10 - playerIndex * 490, 'cards', card.id).setOrigin(0, 1).setInteractive());
-      this.add.text(10, this.game.config.height - 50 - playerIndex * 490, 'Player ' + (playerIndex + 1));
-    })
+      player.forEach((card, cardIndex) => {
+        if (playerIndex == 0) {
+          card.img = this.add.sprite(200 + cardIndex * 140, this.game.config.height - 10, 'cards', card.id).setOrigin(0, 1);
+        }
+        else if (playerIndex == 1) {
+          card.img = this.add.sprite(200 + cardIndex * 140, 10, 'cards', card.id).setOrigin(0, 0);
+        }
+    
+        card.img.setInteractive();
 
-    playersHand[0][0].img.on('pointerdown', () => {
-      let imgId = (playersHand[0][0].img.frame.name == '0') ? playersHand[0][0].id : 0
-      playersHand[0][0].img.setTexture('cards', imgId)
+        card.img.on('pointerover', () => {
+          card.img.depth = 1000;
+          card.img.setScale(1.5);
+        });
+        card.img.on('pointerout', () => {
+          card.img.depth = 0;
+          card.img.setScale(1)
+        });
+        card.img.on('pointerdown', () => {
+          let imgId = (card.img.frame.name == '0') ? card.id : 0;
+          card.img.setTexture('cards', imgId);
+        })
+      });
     })
+  }
+
+  update() {
 
   }
 }
