@@ -21,16 +21,21 @@ export default class Game extends Phaser.Scene {
     // Give 4 cards to each player
     for (let i = cardsDeck.length - 1, nbLoops = nbPlayers * 4; nbLoops > 0; i--, nbLoops--) {
       let player = i % nbPlayers;
-      console.log(player)
       playersHand[player].push(cardsDeck[i]);
       cardsDeck.pop();
     }
 
-    cardsDeck.forEach((card, cardIndex) => this.add.sprite(10 + cardIndex * 2, this.game.config.height / 2, 'cards', card.id).setOrigin(0, 0.5));
+    cardsDeck.forEach((card, cardIndex) => card.img = this.add.sprite(10 + cardIndex * 2, this.game.config.height / 2, 'cards', card.id).setOrigin(0, 0.5));
 
     playersHand.forEach((player, playerIndex) => {
-      player.forEach((card, cardIndex) => this.add.sprite(200 + cardIndex * 140, this.game.config.height - 10 - playerIndex * 490, 'cards', card.id).setOrigin(0, 1));
+      player.forEach((card, cardIndex) => card.img = this.add.sprite(200 + cardIndex * 140, this.game.config.height - 10 - playerIndex * 490, 'cards', card.id).setOrigin(0, 1).setInteractive());
       this.add.text(10, this.game.config.height - 50 - playerIndex * 490, 'Player ' + (playerIndex + 1));
     })
+
+    playersHand[0][0].img.on('pointerdown', () => {
+      let imgId = (playersHand[0][0].img.frame.name == '0') ? playersHand[0][0].id : 0
+      playersHand[0][0].img.setTexture('cards', imgId)
+    })
+
   }
 }
