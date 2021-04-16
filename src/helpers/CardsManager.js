@@ -18,15 +18,13 @@ export default class CardsManager {
     players.forEach(playerZone => {
       playerZone.add(deck.list.splice(-4, 4));
       playerZone.list.forEach((card, cardIndex) => {
+        let y = (playerZone.name == 'playerOneZone')? playerZone.height : 0;
+
+        card.setPosition(cardIndex * 140, y);
+
         if (playerZone.name == 'playerOneZone') {
           card.setOrigin(0, 1);
-          card.x = cardIndex * 140;
-          card.y = playerZone.height;
           card.setInteractive();
-        }
-        else {
-          card.x = cardIndex * 140;
-          card.y = 0;
         }
       })
     })
@@ -40,11 +38,21 @@ export default class CardsManager {
     trash.add(card);
   }
 
-  dealCard(player, cardsDeck) {
-    cardsDeck[cardsDeck.length - 1].img.setInteractive();
-    this.scene.input.setDraggable(cardsDeck[cardsDeck.length - 1].img);
-    player.push(cardsDeck[cardsDeck.length - 1]);
-    cardsDeck.pop();
+  dealCard(player, deck) {
+    let card = deck.last;
+
+    deck.remove(card);
+    player.add(card);
+
+    player.list.forEach((playerCard,index) => {
+      let y = (player.name == 'playerOneZone')? player.height : 0;
+      playerCard.setPosition(index * 140, y);
+    });
+
+    if (player.name == 'playerOneZone') {
+      card.setOrigin(0, 1);
+      card.setInteractive();
+    }
   }
 
   fillDeck(cardsDeck, cardsTrash) {

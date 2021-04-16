@@ -27,14 +27,15 @@ export default class Game extends Phaser.Scene {
     this.cardsManager = new CardsManager(this);
     this.cardsManager.createDeck(this.deckZone);
     this.cardsManager.initialDeal([this.playerOneZone, this.playerTwoZone], this.deckZone);
-    this.input.setDraggable(this.playerOneZone.list)
+    this.input.setDraggable(this.playerOneZone.list);
 
     // Draw the game
     this.dropZoneOutline = this.zonesManager.renderDropZone(this.dropZone);
     this.deckZoneOutline = this.zonesManager.renderContainer(this.deckZone);
     this.trashZoneOutline = this.zonesManager.renderContainer(this.trashZone);
-    this.playerOneZoneOutline = this.zonesManager.renderContainer(this.playerOneZone);
-    this.playerTwoZoneOutline = this.zonesManager.renderContainer(this.playerTwoZone);
+
+    // Temporary fixing this value
+    this.currentPlayer = this.playerOneZone;
 
     // Add events
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -42,15 +43,17 @@ export default class Game extends Phaser.Scene {
       gameObject.x = dragX;
       gameObject.y = dragY;
     });
-    this.input.on('dragend', (pointer, gameObject, dropped) => {
+    this.input.on('dragend', function (pointer, gameObject, dropped) {
       if(!dropped) {
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
       }
     });
     this.input.on('drop', (pointer, gameObject, dropZone) => {
-        this.playerOneZone.remove(gameObject);
+        this.currentPlayer.remove(gameObject);
         this.cardsManager.moveToTrash(gameObject, this.trashZone);
+        this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
+        this.input.setDraggable(this.currentPlayer.list);
     })
 
     this.input.on('pointerover', function (pointer, gameObject) {
