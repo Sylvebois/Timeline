@@ -1,4 +1,6 @@
 import CardsManager from '../helpers/CardsManager';
+import Zone from '../helpers/Zone';
+
 import cardsImg from '../assets/timeline-cards.png';
 
 export default class Game extends Phaser.Scene {
@@ -14,26 +16,29 @@ export default class Game extends Phaser.Scene {
     let nbPlayers = 2;
 
     // Intialize the data
-    let cardsManager = new CardsManager(this);
-
-    let cardsDeck = cardsManager.createDeck();
-    let playersHand = cardsManager.initialDeal(nbPlayers, cardsDeck);
-    let cardsTrash = [];
+    this.zone = new Zone(this);
+    this.cardsManager = new CardsManager(this);
+    this.cardsDeck = this.cardsManager.createDeck();
+    this.playersHand = this.cardsManager.initialDeal(nbPlayers, this.cardsDeck);
+    this.cardsTrash = [];
 
     // Draw the game
-    cardsDeck.forEach((card, cardIndex) => card.img = cardsManager.render(75 + cardIndex * 2 ,this.game.config.height / 3, 'cards', card.id, false));
-   
+    this.dropZone = this.zone.renderZone();
+    this.outline = this.zone.renderOutline(this.dropZone);
+
+    this.cardsDeck.forEach((card, cardIndex) => card.img = this.cardsManager.render(75 + cardIndex * 2, this.game.config.height / 3, 'cards', card.id, false));
+
     let trashZone = this.add.graphics();
     trashZone.lineStyle(4, 0xff0000);
-    trashZone.strokeRoundedRect(10, this.game.config.height * 2 / 3, 128, 176, 15);
+    trashZone.strokeRoundedRect(10, 387, 128, 176, 15);
 
-    playersHand.forEach((player, playerIndex) => {
+    this.playersHand.forEach((player, playerIndex) => {
       player.forEach((card, cardIndex) => {
         if (playerIndex == 0) {
-          card.img = cardsManager.render(200 + cardIndex * 140, this.game.config.height - 10, 'cards', card.id).setOrigin(0, 1);
+          card.img = this.cardsManager.render(200 + cardIndex * 140, this.game.config.height - 10, 'cards', card.id).setOrigin(0, 1);
         }
         else if (playerIndex == 1) {
-          card.img = cardsManager.render(200 + cardIndex * 140, 10, 'cards', card.id).setOrigin(0, 0);
+          card.img = this.cardsManager.render(200 + cardIndex * 140, 10, 'cards', card.id).setOrigin(0, 0);
         }
         card.img.setInteractive();
       });
@@ -53,27 +58,26 @@ export default class Game extends Phaser.Scene {
       gameObject[0].setScale(1)
     });
 
-   /* 
-      let dropZone = this.add.zone(10, this.game.config.height / 3, 128, 176).setInteractive();
-      deckZone.on('pointerdown', () => {
-        if(!cardsDeck.length) {
-          cardsManager.fillDeck(cardsDeck, cardsTrash);
-        }
-        cardsManager.dealCard(playersHand[0],cardsDeck)
-        //card.img.setTexture('cards', imgId);
-      });
-    */
-      /**
-       * Change origin when dealing and trashing cards ?
-       * Put deck cards into a container ? Idem for players hand ?
-       */
+    /* 
+       let dropZone = this.add.zone(10, this.game.config.height / 3, 128, 176).setInteractive();
+       deckZone.on('pointerdown', () => {
+         if(!cardsDeck.length) {
+           cardsManager.fillDeck(cardsDeck, cardsTrash);
+         }
+         cardsManager.dealCard(playersHand[0],cardsDeck)
+         //card.img.setTexture('cards', imgId);
+       });
+     */
+    /**
+     * Change origin when dealing and trashing cards ?
+     * Put deck cards into a container ? Idem for players hand ?
+     */
   }
 
   update() {
-   
-   /* if(!this.cardsDeck.length && this.cardsTrash.length) {
+    if (!this.cardsDeck.length && this.cardsTrash.length) {
       this.CardsManager.fillDeck(this.cardsDeck, this.cardsTrash);
     }
-    */
+
   }
 }
