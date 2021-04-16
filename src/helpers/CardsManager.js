@@ -18,7 +18,7 @@ export default class CardsManager {
       { id: 11, name: 'Le cercle de Stonehenge', date: -2800 },
       { id: 12, name: 'Les alignements de Carnac', date: -5000 }
     ];
-  
+
     return Phaser.Math.RND.shuffle(cardsData);
   }
 
@@ -34,18 +34,31 @@ export default class CardsManager {
 
     return playersHand;
   }
-  
-  moveToTrash(player, cardIndex, cardsTrash) {
 
+  moveToTrash(player, cardIndex, cardsTrash) {
+    let card = player.splice(cardIndex, 1);
+    this.scene.input.setDraggable(card[0].img, false);
+    cardsTrash.push(card[0]);
   }
 
   dealCard(player, cardsDeck) {
-    player.push(cardsDeck[cardsDeck.length-1]);
+    this.scene.input.setDraggable(cardsDeck[cardsDeck.length - 1].img);
+    player.push(cardsDeck[cardsDeck.length - 1]);
     cardsDeck.pop();
   }
 
-  fillDeck(cardsDeck, cardsTrash){
+  fillDeck(cardsDeck, cardsTrash) {
     cardsDeck = Phaser.Math.RND.shuffle(cardsTrash);
     cardsTrash = [];
+  }
+
+  render(x, y, sprite, imgNb, isPlayerHand = true) {
+    let card = this.scene.add.sprite(x, y, sprite, imgNb).setInteractive();
+
+    if(isPlayerHand) {
+      this.scene.input.setDraggable(card);
+    }
+
+    return card;
   }
 }
