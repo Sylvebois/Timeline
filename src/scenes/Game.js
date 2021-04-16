@@ -1,5 +1,5 @@
 import CardsManager from '../helpers/CardsManager';
-import Zone from '../helpers/Zone';
+import ZonesManager from '../helpers/ZonesManager';
 
 import cardsImg from '../assets/timeline-cards.png';
 
@@ -16,21 +16,21 @@ export default class Game extends Phaser.Scene {
     let nbPlayers = 2;
 
     // Intialize the data
-    this.zone = new Zone(this);
+    this.zonesManager = new ZonesManager(this);
+    this.dropZone = this.zonesManager.addZone(650, 350, 900, 250, 'dropZone');
+    this.trashZone = this.zonesManager.addContainer(10, 385, 130, 180, 'trashZone');
+
     this.cardsManager = new CardsManager(this);
     this.cardsDeck = this.cardsManager.createDeck();
-    this.playersHand = this.cardsManager.initialDeal(nbPlayers, this.cardsDeck);
     this.cardsTrash = [];
 
+    this.playersHand = this.cardsManager.initialDeal(nbPlayers, this.cardsDeck);
+
     // Draw the game
-    this.dropZone = this.zone.renderZone();
-    this.outline = this.zone.renderOutline(this.dropZone);
+    this.dropZoneOutline = this.zonesManager.renderDropZone(this.dropZone);
+    this.trashZoneOutline = this.zonesManager.renderContainer(this.trashZone);
 
     this.cardsDeck.forEach((card, cardIndex) => card.img = this.cardsManager.render(75 + cardIndex * 2, this.game.config.height / 3, 'cards', card.id, false));
-
-    let trashZone = this.add.graphics();
-    trashZone.lineStyle(4, 0xff0000);
-    trashZone.strokeRoundedRect(10, 387, 128, 176, 15);
 
     this.playersHand.forEach((player, playerIndex) => {
       player.forEach((card, cardIndex) => {
@@ -46,9 +46,23 @@ export default class Game extends Phaser.Scene {
 
     // Add events
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+      gameObject.setScale(1);
       gameObject.x = dragX;
       gameObject.y = dragY;
     });
+    this.input.on('dragend', (pointer, gameObject, dropped) => {
+      if(!dropped) {
+        gameObject.x = gameObject.input.dragStartX;
+        gameObject.y = gameObject.input.dragStartY;
+      }
+    });
+    this.input.on('drop', (pointer, gameObject, dropZone) => {
+        console.log(gameObject)
+        gameObject.setOrigin(0,0);
+        gameObject.x = this.trashZone.x;
+        gameObject.y = this.trashZone.y;
+    })
+
     this.input.on('pointerover', function (pointer, gameObject) {
       gameObject[0].depth = 1000;
       gameObject[0].setScale(1.5);
