@@ -11,8 +11,7 @@ export default class ZonesManager {
 
   addContainer(x, y, w, h, name) {
     let container = this.scene.add.container(x, y);
-    container.width = w;
-    container.height = h;
+    container.setSize(w, h);
     container.name = name;
     return container;
   };

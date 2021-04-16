@@ -1,47 +1,47 @@
+import { Card, cardsData } from "./Card";
+
 export default class CardsManager {
   constructor(scene) {
     this.scene = scene;
   }
 
-  createDeck() {
-    const cardsData = [
-      { id: 1, name: 'Le Parthénon', date: -447 },
-      { id: 2, name: 'Notre-Dame de Paris', date: 1162 },
-      { id: 3, name: 'Le mont Saint-Michel', date: 708 },
-      { id: 4, name: 'La pyramide de Khéops', date: -2560 },
-      { id: 5, name: 'Le Colisée', date: 70 },
-      { id: 6, name: 'La tour Eiffel', date: 1887 },
-      { id: 7, name: 'La tour de Pise', date: 1172 },
-      { id: 8, name: 'Le Palais idéal', date: 1879 },
-      { id: 9, name: 'La statue de la Liberté', date: 1886 },
-      { id: 10, name: 'Le Taj Mahal', date: 1621 },
-      { id: 11, name: 'Le cercle de Stonehenge', date: -2800 },
-      { id: 12, name: 'Les alignements de Carnac', date: -5000 }
-    ];
+  createDeck(container) {
+    let mixedData = Phaser.Math.RND.shuffle(cardsData);
 
-    return Phaser.Math.RND.shuffle(cardsData);
+    mixedData.forEach((data, index) => {
+      let card = new Card(this.scene);
+      container.add(card.render(index * 2, index * 2, data.id, data).setOrigin(0, 0))
+    })
   }
 
-  initialDeal(nbPlayers, cardsDeck) {
-    let playersHand = new Array(nbPlayers).fill(null).map(elem => elem = []);
-
-    // Give 4 cards to each player
-    for (let i = cardsDeck.length - 1, nbLoops = nbPlayers * 4; nbLoops > 0; i--, nbLoops--) {
-      let player = i % nbPlayers;
-      playersHand[player].push(cardsDeck[i]);
-      cardsDeck.pop();
-    }
-
-    return playersHand;
+  initialDeal(players, deck) {
+    players.forEach(playerZone => {
+      playerZone.add(deck.list.splice(-4, 4));
+      playerZone.list.forEach((card, cardIndex) => {
+        if (playerZone.name == 'playerOneZone') {
+          card.setOrigin(0, 1);
+          card.x = cardIndex * 140;
+          card.y = playerZone.height;
+          card.setInteractive();
+        }
+        else {
+          card.x = cardIndex * 140;
+          card.y = 0;
+        }
+      })
+    })
   }
 
-  moveToTrash(player, cardIndex, cardsTrash) {
-    let card = player.splice(cardIndex, 1);
-    this.scene.input.setDraggable(card[0].img, false);
-    cardsTrash.push(card[0]);
+  moveToTrash(card, trash) {
+    let pos = trash.list.length * 2;
+    card.disableInteractive();
+    card.setOrigin(0, 0);
+    card.setPosition(pos, pos);
+    trash.add(card);
   }
 
   dealCard(player, cardsDeck) {
+    cardsDeck[cardsDeck.length - 1].img.setInteractive();
     this.scene.input.setDraggable(cardsDeck[cardsDeck.length - 1].img);
     player.push(cardsDeck[cardsDeck.length - 1]);
     cardsDeck.pop();
@@ -53,12 +53,17 @@ export default class CardsManager {
   }
 
   render(x, y, sprite, imgNb, isPlayerHand = true) {
-    let card = this.scene.add.sprite(x, y, sprite, imgNb).setInteractive();
+    let card = this.scene.add.sprite(x, y, sprite, imgNb);
 
-    if(isPlayerHand) {
+    if (isPlayerHand) {
+      card.setInteractive();
       this.scene.input.setDraggable(card);
     }
 
     return card;
   }
 }
+
+/**
+ * If using container, we will move one child from one container to another
+ */
