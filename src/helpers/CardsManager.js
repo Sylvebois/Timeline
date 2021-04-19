@@ -5,15 +5,26 @@ export default class CardsManager {
     this.scene = scene;
   }
 
-  createDeck(container) {
+  /**
+   * Create the initial stack of cards.
+   * 
+   * @param {Phaser.GameObjects.Container} deck - The deck container
+   */
+  createDeck(deck) {
     let mixedData = Phaser.Math.RND.shuffle(cardsData);
 
     mixedData.forEach((data, index) => {
       let card = new Card(this.scene);
-      container.add(card.render(index * 2, index * 2, data.id, data).setOrigin(0, 0))
+      deck.add(card.render(index * 2, index * 2, data.id, data).setOrigin(0, 0))
     })
   }
 
+  /**
+   * Create the initial hands for all the players.
+   * 
+   * @param {Phaser.GameObjects.Container[]} players - An array of hand containers
+   * @param {Phaser.GameObjects.Container} deck - The deck container
+   */
   initialDeal(players, deck) {
     players.forEach(playerZone => {
       playerZone.add(deck.list.splice(-4, 4));
@@ -30,6 +41,12 @@ export default class CardsManager {
     })
   }
 
+  /**
+   * When a card is placed on the wrong place, move it to the trash stack.
+   * 
+   * @param {Phaser.GameObjects} card - The card to be moved to the trash container
+   * @param {Phaser.GameObjects.Container} trash - The trash container
+   */
   moveToTrash(card, trash) {
     let pos = trash.list.length * 2;
     card.disableInteractive();
@@ -38,6 +55,12 @@ export default class CardsManager {
     trash.add(card);
   }
 
+  /**
+   * Give a card to the player.
+   * 
+   * @param {*} player - The player's hand container
+   * @param {*} deck - The deck container
+   */
   dealCard(player, deck) {
     let card = deck.last;
 
@@ -55,20 +78,74 @@ export default class CardsManager {
     }
   }
 
-  fillDeck(cardsDeck, cardsTrash) {
-    cardsTrash.each(card => cardsDeck.add(card));
-    cardsTrash.removeAll();
-    cardsDeck.reverse();
+  /**
+   * When the deck is empty, fill it with the trash stack.
+   * 
+   * @param {*} deck - The deck container
+   * @param {*} trash - The trash container
+   */
+  fillDeck(deck, trash) {
+    trash.each(card => deck.add(card));
+    trash.removeAll();
+    deck.reverse();
   }
 
-  render(x, y, sprite, imgNb, isPlayerHand = true) {
-    let card = this.scene.add.sprite(x, y, sprite, imgNb);
-
-    if (isPlayerHand) {
-      card.setInteractive();
-      this.scene.input.setDraggable(card);
+  placeCard(card, index, dropZone) {
+    let cardsPlaced = dropZone.getData('cards');
+    if (index === 0) {
+      cardsPlaced.unshift(card);
+    }
+    else if (index === cardsPlaced.length - 1) {
+      cardsPlaced.push(card);
+    }
+    else {
+      //TO DO split array and insert card at the right index
+      cardsPlaced.push(card);
     }
 
-    return card;
+    card.setOrigin(0.5, 0.5);
+    card.setPosition(dropZone.x, dropZone.y);
+    card.disableInteractive();
+  }
+
+  //TO DO Optimization
+  getDroppedCardIndex(pointerX, cardDropped, cardsPlaced) {
+    let cardDate = cardDropped.cardData.date;
+
+    if (!cardsPlaced.length ||
+      (cardsPlaced.length === 1 && pointerX <= cardsPlaced[0].x && cardDate < cardsPlaced[0].cardData.date)) {
+      return 0;
+    }
+    else if (cardsPlaced.length === 1 && pointerX > cardsPlaced[0].x && cardDate > cardsPlaced[0].cardData.date) {
+      return 1;
+    }
+    else {
+      let indexDown, indexUp;
+      let closestDown = -100000;
+      let closestUp = 100000;
+
+      cardsPlaced.forEach((cardPlaced, cardIndex) => {
+        let diff = cardPlaced.x - pointerX;
+
+        if (diff < 0 && closestDown < diff) {
+          indexDown = cardIndex;
+        }
+        else if (diff > 0 && closestUp > diff) {
+          indexUp = cardIndex;
+        }
+      });
+      console.log(indexDown + ' - ' + indexUp);
+
+      if (!indexDown && cardDate < cardsPlaced[indexUp].cardData.date) {
+        return indexUp;
+      }
+      else if (!indexUp && cardDate > cardsPlaced[indexDown].cardData.date ||
+              (indexDown && indexUp && cardDate > cardsPlaced[indexDown].cardData.date && cardDate < cardsPlaced[indexUp].cardData.date)) {
+        return indexDown;
+      }
+      else {
+        return -1;
+      }
+    }
   }
 }

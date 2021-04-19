@@ -6,6 +6,7 @@ export default class ZonesManager {
   addZone(x, y, w, h, name) {
     let dropZone = this.scene.add.zone(x, y, w, h).setRectangleDropZone(w, h);
     dropZone.name = name;
+    dropZone.setData({ cards: [] });
     return dropZone;
   };
 

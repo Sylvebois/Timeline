@@ -43,17 +43,28 @@ export default class Game extends Phaser.Scene {
       gameObject.x = dragX;
       gameObject.y = dragY;
     });
+
     this.input.on('dragend', function (pointer, gameObject, dropped) {
       if(!dropped) {
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
       }
     });
-    this.input.on('drop', (pointer, gameObject, dropZone) => {
+
+    this.input.on('drop', (pointer, gameObject) => {
         this.currentPlayer.remove(gameObject);
-        this.cardsManager.moveToTrash(gameObject, this.trashZone);
-        this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
-        this.input.setDraggable(this.currentPlayer.list);
+
+        let cardsPlaced = this.dropZone.getData('cards');
+        let placeIndex = this.cardsManager.getDroppedCardIndex(pointer.upX, gameObject, cardsPlaced);
+console.log(placeIndex)
+        if(!cardsPlaced.length || placeIndex >= 0) {
+          this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
+        }
+        else {
+          this.cardsManager.moveToTrash(gameObject, this.trashZone);
+          this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
+          this.input.setDraggable(this.currentPlayer.list);
+        }
     })
 
     this.input.on('pointerover', function (pointer, gameObject) {
@@ -62,12 +73,14 @@ export default class Game extends Phaser.Scene {
       }
       gameObject[0].setScale(1.5);
     });
+
     this.input.on('pointerout', function (pointer, gameObject) {
       gameObject[0].setScale(1);
     });
   }
 
   update() {
+    // Refill the deck if empty
     if (!this.deckZone.list.length && this.trashZone.list.length) {
       this.cardsManager.fillDeck(this.deckZone, this.trashZone);
     }
