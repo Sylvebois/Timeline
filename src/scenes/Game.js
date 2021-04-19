@@ -65,16 +65,11 @@ export default class Game extends Phaser.Scene {
     this.input.on('pointerout', function (pointer, gameObject) {
       gameObject[0].setScale(1);
     });
-
-    /**
-     * Change origin when dealing and trashing cards ?
-     * Put deck cards into a container ? Idem for players hand ?
-     */
   }
 
   update() {
     if (!this.deckZone.list.length && this.trashZone.list.length) {
-      this.CardsManager.fillDeck(this.deckZone, this.trashZone);
+      this.cardsManager.fillDeck(this.deckZone, this.trashZone);
     }
   }
 }

@@ -18,7 +18,7 @@ export default class CardsManager {
     players.forEach(playerZone => {
       playerZone.add(deck.list.splice(-4, 4));
       playerZone.list.forEach((card, cardIndex) => {
-        let y = (playerZone.name == 'playerOneZone')? playerZone.height : 0;
+        let y = (playerZone.name == 'playerOneZone') ? playerZone.height : 0;
 
         card.setPosition(cardIndex * 140, y);
 
@@ -44,8 +44,8 @@ export default class CardsManager {
     deck.remove(card);
     player.add(card);
 
-    player.list.forEach((playerCard,index) => {
-      let y = (player.name == 'playerOneZone')? player.height : 0;
+    player.list.forEach((playerCard, index) => {
+      let y = (player.name == 'playerOneZone') ? player.height : 0;
       playerCard.setPosition(index * 140, y);
     });
 
@@ -56,8 +56,9 @@ export default class CardsManager {
   }
 
   fillDeck(cardsDeck, cardsTrash) {
-    cardsDeck = Phaser.Math.RND.shuffle(cardsTrash);
-    cardsTrash = [];
+    cardsTrash.each(card => cardsDeck.add(card));
+    cardsTrash.removeAll();
+    cardsDeck.reverse();
   }
 
   render(x, y, sprite, imgNb, isPlayerHand = true) {
@@ -71,7 +72,3 @@ export default class CardsManager {
     return card;
   }
 }
-
-/**
- * If using container, we will move one child from one container to another
- */
