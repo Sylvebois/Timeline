@@ -58,8 +58,8 @@ export default class CardsManager {
   /**
    * Give a card to the player.
    * 
-   * @param {*} player - The player's hand container
-   * @param {*} deck - The deck container
+   * @param {Phaser.GameObjects.Container} player - The player's hand container
+   * @param {Phaser.GameObjects.Container} deck - The deck container
    */
   dealCard(player, deck) {
     let card = deck.last;
@@ -81,8 +81,8 @@ export default class CardsManager {
   /**
    * When the deck is empty, fill it with the trash stack.
    * 
-   * @param {*} deck - The deck container
-   * @param {*} trash - The trash container
+   * @param {Phaser.GameObjects.Container} deck - The deck container
+   * @param {Phaser.GameObjects.Container} trash - The trash container
    */
   fillDeck(deck, trash) {
     trash.each(card => deck.add(card));
@@ -90,13 +90,20 @@ export default class CardsManager {
     deck.reverse();
   }
 
+  /**
+   * 
+   * @param {Phaser.GameObjects} card 
+   * @param {Number} index 
+   * @param {Phaser.GameObjects.Zone} dropZone 
+   */
   placeCard(card, index, dropZone) {
     let cardsPlaced = dropZone.getData('cards');
+    let nbcardsPlaced = cardsPlaced.length;
 
     if (index === 0) {
       cardsPlaced.unshift(card);
     }
-    else if (index === cardsPlaced.length) {
+    else if (index === nbcardsPlaced) {
       cardsPlaced.push(card);
     }
     else {
@@ -107,13 +114,24 @@ export default class CardsManager {
     card.disableInteractive();
 
     cardsPlaced.forEach((cardPlaced, cardIndex) => {
-      cardPlaced.setPosition(dropZone.x + cardIndex * 140, dropZone.y);
+      cardPlaced.setPosition(dropZone.x + cardIndex * 140 - nbcardsPlaced * 70, dropZone.y);
+      cardPlaced.cardData.dateText.setPosition(dropZone.x + cardIndex * 140 - nbcardsPlaced * 70, dropZone.y - 90);
     })
 
   }
 
-  //TO DO Optimization
+  /**
+   * Check if the card has been dropped at the right position.
+   * If correctly dropped, returns the index where the card should be inserted.
+   * Else, returns -1.
+   * 
+   * @param {Number} pointerX - The X position of the pointer when the drop occured
+   * @param {Phaser.GameObjects} cardDropped - The card that has been dropped into the zone 
+   * @param {Phaser.GameObjects[]} cardsPlaced - An array of cards already present into the zone
+   * @returns The index where the card should be put in the array or -1
+   */
   getDroppedCardIndex(pointerX, cardDropped, cardsPlaced) {
+    // OPTIMIZATION REQUIRED !!!!
     let cardDate = cardDropped.cardData.date;
 
     if (!cardsPlaced.length) {

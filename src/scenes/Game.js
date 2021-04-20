@@ -59,6 +59,7 @@ export default class Game extends Phaser.Scene {
         let placeIndex = this.cardsManager.getDroppedCardIndex(pointer.upX, gameObject, cardsPlaced);
 
         if(!cardsPlaced.length || placeIndex >= 0) {
+          gameObject.cardData.dateText = this.add.text(0,0, gameObject.cardData.date).setOrigin(0.5,1);
           this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
         }
         else {
