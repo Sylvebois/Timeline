@@ -7,7 +7,7 @@ const config = {
   width: 1280,
   height: 700,
   backgroundColor: 0x3f3f3f,
-  title: 'Basic Cards Game',
+  title: 'Timeline',
   scene: [Game],
 };
 
