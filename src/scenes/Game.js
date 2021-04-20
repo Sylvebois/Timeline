@@ -30,6 +30,7 @@ export default class Game extends Phaser.Scene {
     this.input.setDraggable(this.playerOneZone.list);
 
     // Draw the game
+    this.playerOneZone.depth = 1000;
     this.dropZoneOutline = this.zonesManager.renderDropZone(this.dropZone);
     this.deckZoneOutline = this.zonesManager.renderContainer(this.deckZone);
     this.trashZoneOutline = this.zonesManager.renderContainer(this.trashZone);
@@ -56,7 +57,7 @@ export default class Game extends Phaser.Scene {
 
         let cardsPlaced = this.dropZone.getData('cards');
         let placeIndex = this.cardsManager.getDroppedCardIndex(pointer.upX, gameObject, cardsPlaced);
-console.log(placeIndex)
+
         if(!cardsPlaced.length || placeIndex >= 0) {
           this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
         }

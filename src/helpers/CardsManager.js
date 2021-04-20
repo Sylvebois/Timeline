@@ -92,32 +92,43 @@ export default class CardsManager {
 
   placeCard(card, index, dropZone) {
     let cardsPlaced = dropZone.getData('cards');
+
     if (index === 0) {
       cardsPlaced.unshift(card);
     }
-    else if (index === cardsPlaced.length - 1) {
+    else if (index === cardsPlaced.length) {
       cardsPlaced.push(card);
     }
     else {
-      //TO DO split array and insert card at the right index
-      cardsPlaced.push(card);
+      cardsPlaced.splice(index, 0, card);
     }
 
     card.setOrigin(0.5, 0.5);
-    card.setPosition(dropZone.x, dropZone.y);
     card.disableInteractive();
+
+    cardsPlaced.forEach((cardPlaced, cardIndex) => {
+      cardPlaced.setPosition(dropZone.x + cardIndex * 140, dropZone.y);
+    })
+
   }
 
   //TO DO Optimization
   getDroppedCardIndex(pointerX, cardDropped, cardsPlaced) {
     let cardDate = cardDropped.cardData.date;
 
-    if (!cardsPlaced.length ||
-      (cardsPlaced.length === 1 && pointerX <= cardsPlaced[0].x && cardDate < cardsPlaced[0].cardData.date)) {
+    if (!cardsPlaced.length) {
       return 0;
     }
-    else if (cardsPlaced.length === 1 && pointerX > cardsPlaced[0].x && cardDate > cardsPlaced[0].cardData.date) {
-      return 1;
+    else if (cardsPlaced.length === 1) {
+      if (pointerX <= cardsPlaced[0].x && cardDate < cardsPlaced[0].cardData.date) {
+        return 0;
+      }
+      else if (pointerX > cardsPlaced[0].x && cardDate > cardsPlaced[0].cardData.date) {
+        return 2;
+      }
+      else {
+        return -1;
+      }
     }
     else {
       let indexDown, indexUp;
@@ -134,14 +145,15 @@ export default class CardsManager {
           indexUp = cardIndex;
         }
       });
-      console.log(indexDown + ' - ' + indexUp);
 
-      if (!indexDown && cardDate < cardsPlaced[indexUp].cardData.date) {
-        return indexUp;
+      if (typeof (indexDown) == 'undefined' && cardDate < cardsPlaced[0].cardData.date) {
+        return 0;
       }
-      else if (!indexUp && cardDate > cardsPlaced[indexDown].cardData.date ||
-              (indexDown && indexUp && cardDate > cardsPlaced[indexDown].cardData.date && cardDate < cardsPlaced[indexUp].cardData.date)) {
-        return indexDown;
+      else if (typeof (indexUp) == 'undefined' && cardDate > cardsPlaced[cardsPlaced.length - 1].cardData.date) {
+        return cardsPlaced.length;
+      }
+      else if (indexDown >= 0 && indexUp >= 0 && cardDate > cardsPlaced[indexDown].cardData.date && cardDate < cardsPlaced[indexUp].cardData.date) {
+        return indexUp;
       }
       else {
         return -1;
