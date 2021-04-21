@@ -46,31 +46,40 @@ export default class Game extends Phaser.Scene {
     });
 
     this.input.on('dragend', function (pointer, gameObject, dropped) {
-      if(!dropped) {
+      if (!dropped) {
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
       }
     });
 
     this.input.on('drop', (pointer, gameObject) => {
-        this.currentPlayer.remove(gameObject);
+      this.currentPlayer.remove(gameObject);
 
-        let cardsPlaced = this.dropZone.getData('cards');
-        let placeIndex = this.cardsManager.getDroppedCardIndex(pointer.upX, gameObject, cardsPlaced);
+      let cardsPlaced = this.dropZone.getData('cards');
+      let placeIndex = this.cardsManager.getDroppedCardIndex(pointer.upX, gameObject, cardsPlaced);
 
-        if(!cardsPlaced.length || placeIndex >= 0) {
-          gameObject.cardData.dateText = this.add.text(0,0, gameObject.cardData.date).setOrigin(0.5,1);
-          this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
+      if (!cardsPlaced.length || placeIndex >= 0) {
+        gameObject.cardData.dateText = this.add.text(0, 0, gameObject.cardData.date).setOrigin(0.5, 1);
+        this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
+
+        if(!this.currentPlayer.list.length) {
+          console.log('you win !!!')
         }
-        else {
-          this.cardsManager.moveToTrash(gameObject, this.trashZone);
-          this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
-          this.input.setDraggable(this.currentPlayer.list);
+      }
+      else {
+        this.cardsManager.moveToTrash(gameObject, this.trashZone);
+
+        if (!this.deckZone.list.length && this.trashZone.list.length) {
+          this.cardsManager.fillDeck(this.deckZone, this.trashZone);
         }
+
+        this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
+        this.input.setDraggable(this.currentPlayer.list);
+      }
     })
 
     this.input.on('pointerover', function (pointer, gameObject) {
-      if(gameObject[0].parentContainer) {
+      if (gameObject[0].parentContainer) {
         gameObject[0].parentContainer.bringToTop(gameObject[0]);
       }
       gameObject[0].setScale(1.5);
@@ -82,9 +91,5 @@ export default class Game extends Phaser.Scene {
   }
 
   update() {
-    // Refill the deck if empty
-    if (!this.deckZone.list.length && this.trashZone.list.length) {
-      this.cardsManager.fillDeck(this.deckZone, this.trashZone);
-    }
   }
 }
