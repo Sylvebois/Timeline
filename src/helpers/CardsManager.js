@@ -1,8 +1,10 @@
 import { Card, cardsData } from "./Card";
 
 export default class CardsManager {
-  constructor(scene) {
+  constructor(scene, cardWith, cardHeight) {
     this.scene = scene;
+    this.cardWidth = Math.ceil(scene.cardWidth / 10) * 10;
+    this.cardHeight = Math.ceil(scene.cardHeight / 10) * 10;
   }
 
   /**
@@ -24,14 +26,15 @@ export default class CardsManager {
    * 
    * @param {Phaser.GameObjects.Container[]} players - An array of hand containers
    * @param {Phaser.GameObjects.Container} deck - The deck container
+   * @param {Phaser.GameObjects.Zone} dropZone 
    */
-  initialDeal(players, deck) {
+  initialDeal(players, deck, dropZone) {
     players.forEach(playerZone => {
       playerZone.add(deck.list.splice(-4, 4));
       playerZone.list.forEach((card, cardIndex) => {
         let y = (playerZone.name == 'playerOneZone') ? playerZone.height : 0;
 
-        card.setPosition(cardIndex * 140, y);
+        card.setPosition(cardIndex * this.cardWidth, y);
 
         if (playerZone.name == 'playerOneZone') {
           card.setOrigin(0, 1);
@@ -69,7 +72,7 @@ export default class CardsManager {
 
     player.list.forEach((playerCard, index) => {
       let y = (player.name == 'playerOneZone') ? player.height : 0;
-      playerCard.setPosition(index * 140, y);
+      playerCard.setPosition(index * this.cardWidth, y);
     });
 
     if (player.name == 'playerOneZone') {
@@ -114,8 +117,10 @@ export default class CardsManager {
     card.disableInteractive();
 
     cardsPlaced.forEach((cardPlaced, cardIndex) => {
-      cardPlaced.setPosition(dropZone.x + cardIndex * 140 - nbcardsPlaced * 70, dropZone.y);
-      cardPlaced.cardData.dateText.setPosition(dropZone.x + cardIndex * 140 - nbcardsPlaced * 70, dropZone.y - 90);
+      let posX = dropZone.x + cardIndex * this.cardWidth - nbcardsPlaced * this.cardWidth / 2;
+
+      cardPlaced.setPosition(posX, dropZone.y);
+      cardPlaced.cardData.dateText.setPosition(posX, dropZone.y - 90);
     })
 
   }

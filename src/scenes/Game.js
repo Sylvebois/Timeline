@@ -6,10 +6,12 @@ import cardsImg from '../assets/timeline-cards.png';
 export default class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'Game' });
+    this.cardWidth = 128;
+    this.cardHeight = 176;
   }
 
   preload() {
-    this.load.spritesheet('cards', cardsImg, { frameWidth: 128, frameHeight: 176 });
+    this.load.spritesheet('cards', cardsImg, { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
   }
 
   create() {
@@ -17,16 +19,16 @@ export default class Game extends Phaser.Scene {
 
     // Intialize the zones
     this.zonesManager = new ZonesManager(this);
-    this.dropZone = this.zonesManager.addZone(650, 350, 900, 250, 'dropZone');
-    this.deckZone = this.zonesManager.addContainer(10, 135, 130, 180, 'deckZone');
-    this.trashZone = this.zonesManager.addContainer(10, 385, 130, 180, 'trashZone');
-    this.playerOneZone = this.zonesManager.addContainer(200, 510, 900, 180, 'playerOneZone');
-    this.playerTwoZone = this.zonesManager.addContainer(200, 10, 900, 180, 'playerTwoZone');
+    this.dropZone = this.zonesManager.addZone(200 + this.cardWidth*4, this.game.config.height/2, this.cardWidth*8, this.cardHeight + this.cardHeight / 2, 'dropZone');
+    this.deckZone = this.zonesManager.addContainer(10, 135, this.cardWidth, this.cardHeight, 'deckZone');
+    this.trashZone = this.zonesManager.addContainer(10, 385, this.cardWidth, this.cardHeight, 'trashZone');
+    this.playerOneZone = this.zonesManager.addContainer(200, 510, this.cardWidth*4, this.cardHeight, 'playerOneZone');
+    this.playerTwoZone = this.zonesManager.addContainer(200, 10, this.cardWidth*4, this.cardHeight, 'playerTwoZone');
 
     // Initialize the data
     this.cardsManager = new CardsManager(this);
     this.cardsManager.createDeck(this.deckZone);
-    this.cardsManager.initialDeal([this.playerOneZone, this.playerTwoZone], this.deckZone);
+    this.cardsManager.initialDeal([this.playerOneZone, this.playerTwoZone], this.deckZone, this.dropZone);
     this.input.setDraggable(this.playerOneZone.list);
 
     // Draw the game
@@ -91,5 +93,6 @@ export default class Game extends Phaser.Scene {
   }
 
   update() {
+    
   }
 }
