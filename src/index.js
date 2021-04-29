@@ -6,7 +6,6 @@ const config = {
   parent: 'phaser-app',
   width: 1280,
   height: 700,
-  backgroundColor: 0x3f3f3f,
   title: 'Timeline',
   scale : {
     mode : Phaser.Scale.FIT,
