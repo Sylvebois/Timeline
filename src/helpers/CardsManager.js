@@ -32,11 +32,11 @@ export default class CardsManager {
     players.forEach(playerZone => {
       playerZone.add(deck.list.splice(-4, 4));
       playerZone.list.forEach((card, cardIndex) => {
-        let y = (playerZone.name == 'playerOneZone') ? playerZone.height : 0;
+        let y = (playerZone.name == 'playerOne') ? playerZone.height : 0;
 
         card.setPosition(cardIndex * this.cardWidth, y);
 
-        if (playerZone.name == 'playerOneZone') {
+        if (playerZone.name == 'playerOne') {
           card.setOrigin(0, 1);
           card.setInteractive();
         }
@@ -71,11 +71,11 @@ export default class CardsManager {
     player.add(card);
 
     player.list.forEach((playerCard, index) => {
-      let y = (player.name == 'playerOneZone') ? player.height : 0;
+      let y = (player.name == 'playerOne') ? player.height : 0;
       playerCard.setPosition(index * this.cardWidth, y);
     });
 
-    if (player.name == 'playerOneZone') {
+    if (player.name == 'playerOne') {
       card.setOrigin(0, 1);
       card.setInteractive();
     }

@@ -1,5 +1,6 @@
 import CardsManager from '../helpers/CardsManager';
 import ZonesManager from '../helpers/ZonesManager';
+import AnimationManager from '../helpers/AnimationsManager';
 
 import cardsImg from '../assets/timeline-cards.png';
 
@@ -23,23 +24,22 @@ export default class Game extends Phaser.Scene {
     this.dropZone = this.zonesManager.addZone(200 + this.cardWidth * 4, this.game.config.height / 2, this.cardWidth * 8, this.cardHeight + this.cardHeight / 2, 'dropZone');
     this.deckZone = this.zonesManager.addContainer(10, 135, this.cardWidth, this.cardHeight, 'deckZone');
     this.trashZone = this.zonesManager.addContainer(10, 385, this.cardWidth, this.cardHeight, 'trashZone');
-    this.playerOneZone = this.zonesManager.addContainer(200, 510, this.cardWidth * 4, this.cardHeight, 'playerOneZone');
-    this.playerTwoZone = this.zonesManager.addContainer(200, 10, this.cardWidth * 4, this.cardHeight, 'playerTwoZone');
+    this.playerOne = this.zonesManager.addContainer(200, 510, this.cardWidth * 4, this.cardHeight, 'playerOne');
+    this.playerTwo = this.zonesManager.addContainer(200, 10, this.cardWidth * 4, this.cardHeight, 'playerTwo');
 
     // Initialize the data
     this.cardsManager = new CardsManager(this);
     this.cardsManager.createDeck(this.deckZone);
-    this.cardsManager.initialDeal([this.playerOneZone, this.playerTwoZone], this.deckZone, this.dropZone);
-    this.input.setDraggable(this.playerOneZone.list);
+    this.cardsManager.initialDeal([this.playerOne, this.playerTwo], this.deckZone, this.dropZone);
+    this.input.setDraggable(this.playerOne.list);
+    this.currentPlayer = this.playerOne;
 
-    // Draw the game
-    this.playerOneZone.depth = 1000;
+    // Initialize the visual interface
+    this.playerOneOutline = this.zonesManager.renderContainer(this.playerOne);
+    this.playerOne.depth = 1000;
+    this.playerTwoOutline = this.zonesManager.renderContainer(this.playerTwo);
+    this.playerTwo.depth = 1000;
     this.dropZoneOutline = this.zonesManager.renderDropZone(this.dropZone);
-    this.deckZoneOutline = this.zonesManager.renderContainer(this.deckZone);
-    this.trashZoneOutline = this.zonesManager.renderContainer(this.trashZone);
-
-    // Temporary fixing this value
-    this.currentPlayer = this.playerOneZone;
 
     // Add events
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
