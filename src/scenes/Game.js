@@ -1,6 +1,5 @@
 import CardsManager from '../helpers/CardsManager';
 import ZonesManager from '../helpers/ZonesManager';
-import AnimationManager from '../helpers/AnimationsManager';
 
 import cardsImg from '../assets/timeline-cards.png';
 
