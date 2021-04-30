@@ -31,8 +31,6 @@ export default class Game extends Phaser.Scene {
     this.cardsManager = new CardsManager(this);
     this.cardsManager.createDeck(this.deckZone);
     this.cardsManager.initialDeal([this.playerOne, this.playerTwo], this.deckZone, this.dropZone);
-    this.input.setDraggable(this.playerOne.list);
-    this.currentPlayer = this.playerOne;
 
     // Initialize the visual interface
     this.playerOneOutline = this.zonesManager.renderContainer(this.playerOne);
@@ -40,6 +38,8 @@ export default class Game extends Phaser.Scene {
     this.playerTwoOutline = this.zonesManager.renderContainer(this.playerTwo);
     this.playerTwo.depth = 1000;
     this.dropZoneOutline = this.zonesManager.renderDropZone(this.dropZone);
+
+    this.currentPlayer = this.switchActivePlayer(true);
 
     // Add events
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -66,7 +66,7 @@ export default class Game extends Phaser.Scene {
         this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
 
         if (!this.currentPlayer.list.length) {
-          console.log('you win !!!')
+          console.log(this.currentPlayer.name + ' win !!!')
         }
       }
       else {
@@ -77,8 +77,9 @@ export default class Game extends Phaser.Scene {
         }
 
         this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
-        this.input.setDraggable(this.currentPlayer.list);
       }
+
+      this.currentPlayer = this.switchActivePlayer();
     })
 
     this.input.on('pointerover', function (pointer, gameObject) {
@@ -95,5 +96,24 @@ export default class Game extends Phaser.Scene {
 
   update() {
 
+  }
+
+  switchActivePlayer(initialDeal = false) {
+    if (initialDeal || this.currentPlayer.name == 'playerTwo') {
+      this.playerOne.list.forEach(card => card.setInteractive());
+      this.input.setDraggable(this.playerOne.list);
+      this.playerOneOutline.setVisible(true);
+      this.playerTwo.list.forEach(card => card.disableInteractive());
+      this.playerTwoOutline.setVisible(false);
+      return this.playerOne;
+    }
+    else {
+      this.playerOne.list.forEach(card => card.disableInteractive());
+      this.playerOneOutline.setVisible(false);
+      this.playerTwo.list.forEach(card => card.setInteractive());
+      this.input.setDraggable(this.playerTwo.list);
+      this.playerTwoOutline.setVisible(true);
+      return this.playerTwo;
+    }
   }
 }

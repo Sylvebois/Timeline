@@ -33,13 +33,10 @@ export default class CardsManager {
       playerZone.add(deck.list.splice(-4, 4));
       playerZone.list.forEach((card, cardIndex) => {
         let y = (playerZone.name == 'playerOne') ? playerZone.height : 0;
+        let originY = (playerZone.name == 'playerOne') ? 1 : 0;
 
         card.setPosition(cardIndex * this.cardWidth, y);
-
-        if (playerZone.name == 'playerOne') {
-          card.setOrigin(0, 1);
-          card.setInteractive();
-        }
+        card.setOrigin(0, originY);
       })
     })
   }
@@ -52,9 +49,9 @@ export default class CardsManager {
    */
   moveToTrash(card, trash) {
     let pos = trash.list.length * 2;
-    card.disableInteractive();
     card.setOrigin(0, 0);
     card.setPosition(pos, pos);
+    card.disableInteractive();
     trash.add(card);
   }
 
@@ -66,6 +63,9 @@ export default class CardsManager {
    */
   dealCard(player, deck) {
     let card = deck.last;
+    let originY = (player.name == 'playerOne') ? 1 : 0;
+
+    card.setOrigin(0, originY);
 
     deck.remove(card);
     player.add(card);
@@ -74,11 +74,6 @@ export default class CardsManager {
       let y = (player.name == 'playerOne') ? player.height : 0;
       playerCard.setPosition(index * this.cardWidth, y);
     });
-
-    if (player.name == 'playerOne') {
-      card.setOrigin(0, 1);
-      card.setInteractive();
-    }
   }
 
   /**
@@ -122,7 +117,6 @@ export default class CardsManager {
       cardPlaced.setPosition(posX, dropZone.y);
       cardPlaced.cardData.dateText.setPosition(posX, dropZone.y - 90);
     })
-
   }
 
   /**
