@@ -141,26 +141,21 @@ export default class CardsManager {
 
       // If dropped on the first half of the first card or before
       if (droppedIndex <= 0 && pointerX < cardsPlaced[0].x && cardDate < cardsPlaced[0].cardData.date) {
-        console.log('case 0 : ' + droppedIndex)
         return 0;
       }
       // If dropped on the second half of the last card or further
       else if ((droppedIndex === -1 || droppedIndex === cardsPlacedLength - 1) && pointerX > cardsPlaced[cardsPlacedLength - 1].x && cardDate > cardsPlaced[cardsPlacedLength - 1].cardData.date) {
-        console.log('case 1 : ' + droppedIndex)
         return cardsPlacedLength;
       }
       // If dropped on the first half of a card
-      else if (pointerX < cardsPlaced[droppedIndex].x && cardDate > cardsPlaced[droppedIndex-1].cardData.date && cardDate < cardsPlaced[droppedIndex].cardData.date ) {
-        console.log('case 2 : ' + droppedIndex)
+      else if (droppedIndex >= 0 && pointerX < cardsPlaced[droppedIndex].x && cardDate < cardsPlaced[droppedIndex].cardData.date && cardDate > cardsPlaced[droppedIndex - 1].cardData.date) {
         return droppedIndex;
       }
       // If dropped on the second half of a card
-      else if (pointerX > cardsPlaced[droppedIndex].x && cardDate > cardsPlaced[droppedIndex].cardData.date && cardDate < cardsPlaced[droppedIndex+1].cardData.date ) {
-        console.log('case 3 : ' + droppedIndex)
+      else if (droppedIndex >= 0 && pointerX > cardsPlaced[droppedIndex].x && cardDate > cardsPlaced[droppedIndex].cardData.date && cardDate < cardsPlaced[droppedIndex + 1].cardData.date) {
         return droppedIndex + 1;
       }
       else {
-        console.log('case 4 : ' + droppedIndex)
         return -1;
       }
     }
