@@ -19,8 +19,8 @@ export default class ZonesManager {
 
   renderDropZone(dropZone) {
     let dropZoneOutline = this.scene.add.graphics();
-    dropZoneOutline.lineStyle(4, 0xff69b4);
-    dropZoneOutline.strokeRect(dropZone.x - dropZone.input.hitArea.width / 2, dropZone.y - dropZone.input.hitArea.height / 2, dropZone.input.hitArea.width, dropZone.input.hitArea.height);
+    dropZoneOutline.lineStyle(2, 0x000000);
+    dropZoneOutline.strokeRect(dropZone.x - dropZone.width / 2, dropZone.y - dropZone.height / 2, dropZone.width, dropZone.height);
     return dropZoneOutline;
   }
 
@@ -29,5 +29,12 @@ export default class ZonesManager {
     containerOutline.lineStyle(4, 0xff69b4);
     containerOutline.strokeRect(container.x, container.y, container.width, container.height);
     return containerOutline;
+  }
+
+  renderBackground(imgName) {
+    let background = this.scene.add.image(0,0,imgName).setOrigin(0,0);
+    console.log(this.scene.game.config)
+    background.setDisplaySize(this.scene.game.config.width, this.scene.game.config.height);
+    return background;
   }
 }

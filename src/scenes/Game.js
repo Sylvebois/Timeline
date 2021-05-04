@@ -2,6 +2,7 @@ import CardsManager from '../helpers/CardsManager';
 import ZonesManager from '../helpers/ZonesManager';
 
 import cardsImg from '../assets/timeline-cards.png';
+import backgroundImg from '../assets/background.png';
 
 export default class Game extends Phaser.Scene {
   constructor() {
@@ -12,6 +13,7 @@ export default class Game extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('background', backgroundImg);
     this.load.spritesheet('cards', cardsImg, { frameWidth: this.cardWidth / 0.75, frameHeight: this.cardHeight / 0.75 });
   }
 
@@ -20,6 +22,7 @@ export default class Game extends Phaser.Scene {
 
     // Intialize the zones
     this.zonesManager = new ZonesManager(this);
+    this.background = this.zonesManager.renderBackground('background');
     this.dropZone = this.zonesManager.addZone(200 + this.cardWidth * 4, this.game.config.height / 2, this.cardWidth * 8, this.cardHeight + this.cardHeight / 2, 'dropZone');
     this.deckZone = this.zonesManager.addContainer(10, 135, this.cardWidth, this.cardHeight, 'deckZone');
     this.trashZone = this.zonesManager.addContainer(10, 385, this.cardWidth, this.cardHeight, 'trashZone');
