@@ -44,6 +44,12 @@ export default class Game extends Phaser.Scene {
     this.currentPlayer = this.switchActivePlayer(true);
 
     // Add events
+    this.input.on('pointerdown', () => {
+    /*  if(this.endGameTween && this.endGameTween.progress === 1) {
+        this.scene.start('Game');
+      }*/
+    });
+
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
       gameObject.setScale(0.75);
       gameObject.x = dragX;
@@ -68,7 +74,10 @@ export default class Game extends Phaser.Scene {
         this.cardsManager.placeCard(gameObject, placeIndex, this.dropZone);
 
         if (!this.currentPlayer.list.length) {
-          console.log(this.currentPlayer.name + ' win !!!')
+          this.endGame(this.currentPlayer.name);
+        }
+        else{
+          this.currentPlayer = this.switchActivePlayer();
         }
       }
       else {
@@ -79,9 +88,8 @@ export default class Game extends Phaser.Scene {
         }
 
         this.cardsManager.dealCard(this.currentPlayer, this.deckZone);
+        this.currentPlayer = this.switchActivePlayer();
       }
-
-      this.currentPlayer = this.switchActivePlayer();
     })
 
     this.input.on('pointerover', function (pointer, gameObject) {
@@ -117,5 +125,56 @@ export default class Game extends Phaser.Scene {
       this.playerTwoOutline.setVisible(true);
       return this.playerTwo;
     }
+  }
+
+  endGame(winnerName) {
+    this.playerOne.list.forEach(card => card.disableInteractive());
+    this.playerTwo.list.forEach(card => card.disableInteractive());
+
+    let endText = this.add.text(this.game.config.width / 2, this.game.config.height / 2, winnerName + ' win !');
+    endText.setOrigin(0.5, 0.5).setFontSize(100).setScale(0);
+    endText.alpha = 0;
+
+    const color = new Phaser.Display.Color();
+    let squares = [];
+
+    for (let i = 0; i < 10; i++) {
+      color.random(20, 200);
+      squares.push(this.add.rectangle(this.game.config.width / 2, this.game.config.height / 2, 15, 15, color.color));
+    }
+
+    let fireworks = this.tweens.add({
+      targets: squares[Phaser.Math.Between(0, squares.length - 1)],
+      paused: true,
+      repeat: -1,
+      x: {
+        from: this.game.config.width / 2,
+        to: Phaser.Math.Between(this.game.config.width / 4, 3 * this.game.config.width / 4)
+      },
+      y: {
+        from: this.game.config.height / 2,
+        to: Phaser.Math.Between(this.game.config.height / 4, this.game.config.height / 2),
+      },
+      onRepeat: () => {
+        fireworks.data[0].target.x = this.game.config.width / 2;
+        fireworks.data[0].target.y = this.game.config.height / 2;
+
+        fireworks.data[0].end = Phaser.Math.Between(this.game.config.width / 4, 3 * this.game.config.width / 4);
+        fireworks.data[0].target = squares[Phaser.Math.Between(0, squares.length - 1)];
+
+        fireworks.data[1].end = Phaser.Math.Between(this.game.config.height / 4, this.game.config.height / 2);
+        fireworks.data[1].target = fireworks.data[0].target;
+      }
+    })
+
+    this.endGameTween = this.tweens.add({
+      targets: endText,
+      alpha: 1,
+      scale: 1,
+      ease: 'Quintic.easeInOut',
+      duration: 1500,
+      completeDelay: 500,
+      onComplete: () => fireworks.play()
+    });
   }
 }

@@ -33,7 +33,6 @@ export default class ZonesManager {
 
   renderBackground(imgName) {
     let background = this.scene.add.image(0,0,imgName).setOrigin(0,0);
-    console.log(this.scene.game.config)
     background.setDisplaySize(this.scene.game.config.width, this.scene.game.config.height);
     return background;
   }
