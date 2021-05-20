@@ -45,9 +45,10 @@ export default class Game extends Phaser.Scene {
 
     // Add events
     this.input.on('pointerdown', () => {
-    /*  if(this.endGameTween && this.endGameTween.progress === 1) {
+      if(this.endGameTween && this.endGameTween.progress === 1) {
+        this.endGameTween.progress = 0;
         this.scene.start('Game');
-      }*/
+      }
     });
 
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
