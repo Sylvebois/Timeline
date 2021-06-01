@@ -1,5 +1,5 @@
 export class Card {
-  constructor(scene){
+  constructor(scene) {
     this.scene = scene;
   }
 
@@ -11,25 +11,31 @@ export class Card {
 }
 
 export const cardsData = [
-  { id: 0, name: 'Début de la construction de Notre-Dame de Paris', date: 1163 },
-  { id: 1, name: 'Premier recueil des Fables de La Fontaine', date: 1668 },
-  { id: 2, name: 'Siège de Gergovie et d’Alésia', date: -52 },
-  { id: 3, name: 'Attila, le roi des Huns, envahit la Gaule', date: 451 },
-  { id: 4, name: 'Début du règne de Charlemagne', date: 768 },
-  { id: 5, name: 'Première apparition de Sherlock Holmes', date: 1887 },
-  { id: 6, name: 'Sortie du film La Guerre des Etoiles', date: 1977 },
-  { id: 7, name: 'Création de Facebook', date: 2004 },
-  { id: 8, name: 'Invention de la carte à jouer', date: 900 },
-  { id: 9, name: 'Création de la NBA', date: 1946 },
-  { id: 10, name: 'Apparition du croissant', date: 1683 },
-  { id: 11, name: 'Invention de l’ampoule électrique', date: 1879 },
-  { id: 12, name: 'Invention du cinématographe', date: 1895 },
-  { id: 13, name: 'Théorie de la relativité', date: 1915 },
-  { id: 14, name: 'Premier ordinateur portable', date: 1981 },
-  { id: 15, name: 'Apparition des abeilles', date: -100000000 },
-  { id: 16, name: 'Invention du dé', date: -3000 },
-  { id: 17, name: 'Début de la construction du phare d\'Alexandrie', date: -297 },
-  { id: 18, name: 'Cléopâtre est couronnée reine d\'Egypte', date: -51 },
+  { id: 0, name: 'Début de la construction de Notre-Dame de Paris', creator: '', collection: 'France', date: 1163 },
+  { id: 1, name: 'Premier recueil des Fables de La Fontaine', creator: '', collection: 'France', date: 1668 },
+  { id: 2, name: 'Siège de Gergovie et d’Alésia', creator: '', collection: 'France', date: -52 },
+  { id: 3, name: 'Attila, le roi des Huns, envahit la Gaule', creator: '', collection: 'France', date: 451 },
+  { id: 4, name: 'Début du règne de Charlemagne', creator: '', collection: 'France', date: 768 },
+  { id: 5, name: 'Première apparition de Sherlock Holmes', creator: 'Arthur Conan Doyle', collection: 'General', date: 1887 },
+  { id: 6, name: 'Sortie du film La Guerre des Etoiles', creator: 'Georges Lucas', collection: 'General', date: 1977 },
+  { id: 7, name: 'Création de Facebook', creator: 'Mark Zuckerberg', collection: 'General', date: 2004 },
+  { id: 8, name: 'Invention de la carte à jouer', creator: '', collection: 'General', date: 900 },
+  { id: 9, name: 'Création de la NBA', creator: '', collection: 'General', date: 1946 },
+  { id: 10, name: 'Apparition du croissant', creator: '', collection: 'General', date: 1683 },
+  { id: 11, name: 'Invention de l’ampoule électrique', creator: 'Thomas Edison', collection: 'Invention', date: 1879 },
+  { id: 12, name: 'Invention du cinématographe', creator: 'Auguste et Louis Lumière', collection: 'Invention', date: 1895 },
+  { id: 13, name: 'Théorie de la relativité', creator: 'Albert Einstein', collection: 'Invention', date: 1915 },
+  { id: 14, name: 'Premier ordinateur portable', creator: 'Adam Osborne', collection: 'Invention', date: 1981 },
+  { id: 15, name: 'Apparition des abeilles', creator: '', collection: 'General', date: -100000000 },
+  { id: 16, name: 'Invention du dé', creator: '', collection: 'General', date: -3000 },
+  { id: 17, name: 'Début de la construction du phare d\'Alexandrie', creator: '', collection: 'General', date: -297 },
+  { id: 18, name: 'Cléopâtre est couronnée reine d\'Egypte', creator: '', collection: 'General', date: -51 },
+  { id: 19, name: 'Domestication du feu', creator: '', collection: 'Invention', date: -600000 },
+  { id: 20, name: 'Débuts de l\'écriture', creator: '', collection: 'Invention', date: -3400 },
+  { id: 21, name: 'Invention de la brosse à dents', creator: '', collection: 'Invention', date: 1498 },
+  { id: 22, name: 'Invention du microscope', creator: 'Zacharias Jansen', collection: 'Invention', date: 1590 },
+  { id: 23, name: 'Invention du thermomètre', creator: 'Galilée', collection: 'Invention', date: 1612 },
+  { id: 24, name: 'Invention du code morse', creator: 'Samuel Finley Morse', collection: 'Invention', date: 1838 },
 ];
 /*
 export  const cardsData = [
