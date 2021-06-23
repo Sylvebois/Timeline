@@ -47,7 +47,7 @@ export default class Game extends Phaser.Scene {
     this.input.on('pointerdown', () => {
       if(this.endGameTween && this.endGameTween.progress === 1) {
         this.endGameTween.progress = 0;
-        this.scene.start('Game');
+        this.scene.start('Title');
       }
     });
 
@@ -104,11 +104,7 @@ export default class Game extends Phaser.Scene {
       gameObject[0].setScale(0.75);
     });
   }
-
-  update() {
-
-  }
-
+  
   switchActivePlayer(initialDeal = false) {
     if (initialDeal || this.currentPlayer.name == 'playerTwo') {
       this.playerOne.list.forEach(card => card.setInteractive());
