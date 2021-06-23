@@ -13,12 +13,9 @@ export default class CardsManager {
    * @param {Phaser.GameObjects.Container} deck - The deck container
    */
   createDeck(deck) {
+    let card = new Card(this.scene);
     let mixedData = Phaser.Math.RND.shuffle(cardsData);
-
-    mixedData.forEach((data, index) => {
-      let card = new Card(this.scene);
-      deck.add(card.render(index * 2, index * 2, data.id, data).setOrigin(0, 0))
-    })
+    mixedData.forEach((data, index) => deck.add(card.render(index * 2, index * 2, data.id, data).disableInteractive()))
   }
 
   /**
@@ -32,11 +29,8 @@ export default class CardsManager {
     players.forEach(playerZone => {
       playerZone.add(deck.list.splice(-4, 4));
       playerZone.list.forEach((card, cardIndex) => {
-        let y = (playerZone.name == 'playerOne') ? playerZone.height : 0;
-        let originY = (playerZone.name == 'playerOne') ? 1 : 0;
-
+        let y = (playerZone.name == 'playerOne') ? playerZone.height - this.cardHeight : 0;
         card.setPosition(cardIndex * this.cardWidth, y);
-        card.setOrigin(0, originY);
       })
     })
   }
@@ -49,7 +43,6 @@ export default class CardsManager {
    */
   moveToTrash(card, trash) {
     let pos = trash.list.length * 2;
-    card.setOrigin(0, 0);
     card.setPosition(pos, pos);
     card.disableInteractive();
     trash.add(card);
@@ -63,15 +56,12 @@ export default class CardsManager {
    */
   dealCard(player, deck) {
     let card = deck.last;
-    let originY = (player.name == 'playerOne') ? 1 : 0;
-
-    card.setOrigin(0, originY);
 
     deck.remove(card);
     player.add(card);
 
     player.list.forEach((playerCard, index) => {
-      let y = (player.name == 'playerOne') ? player.height : 0;
+      let y = (player.name == 'playerOne') ? player.height - this.cardHeight : 0;
       playerCard.setPosition(index * this.cardWidth, y);
     });
   }
@@ -86,6 +76,7 @@ export default class CardsManager {
     trash.each(card => deck.add(card));
     trash.removeAll();
     deck.reverse();
+    deck.list.forEach((card, index) => card.setPosition(index * 2, index * 2));
   }
 
   /**
@@ -108,14 +99,13 @@ export default class CardsManager {
       cardsPlaced.splice(index, 0, card);
     }
 
-    card.setOrigin(0.5, 0.5);
     card.disableInteractive();
 
     cardsPlaced.forEach((cardPlaced, cardIndex) => {
-      let posX = dropZone.x + cardIndex * this.cardWidth - nbcardsPlaced * this.cardWidth / 2;
+      let posX = dropZone.x - this.cardWidth / 2 + cardIndex * this.cardWidth - nbcardsPlaced * this.cardWidth / 2;
 
-      cardPlaced.setPosition(posX, dropZone.y);
-      cardPlaced.cardData.dateText.setPosition(posX, dropZone.y - 90);
+      cardPlaced.setPosition(posX, dropZone.y - this.cardHeight / 2);
+      cardPlaced.last.setVisible(true);
     })
   }
 

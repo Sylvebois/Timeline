@@ -1,8 +1,9 @@
 import CardsManager from '../helpers/CardsManager';
 import ZonesManager from '../helpers/ZonesManager';
 
-import cardsImg from '../assets/timeline-cards.png';
 import backgroundImg from '../assets/background.png';
+import cardBackground from '../assets/cardBackground.png';
+import cardImg from '../assets/cardImg.png';
 
 export default class Game extends Phaser.Scene {
   constructor() {
@@ -14,7 +15,8 @@ export default class Game extends Phaser.Scene {
 
   preload() {
     this.load.image('background', backgroundImg);
-    this.load.spritesheet('cards', cardsImg, { frameWidth: this.cardWidth / 0.75, frameHeight: this.cardHeight / 0.75 });
+    this.load.image('cardBackground', cardBackground);
+    this.load.spritesheet('cardImg', cardImg, { frameWidth: 128, frameHeight: 128 });
   }
 
   create() {

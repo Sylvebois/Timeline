@@ -4,9 +4,20 @@ export class Card {
   }
 
   render(x, y, imgNb, additionalData) {
-    let card = this.scene.add.sprite(x, y, 'cards', imgNb).setScale(0.75);
-    card.cardData = additionalData;
-    return card;
+    let container = this.scene.add.container(x, y);
+    container.setSize(160, 240);
+
+    let cardBack = this.scene.add.sprite(0, 0, 'cardBackground').setOrigin(0, 0);
+    let cardImg = this.scene.add.sprite(16, 15, 'cardImg', imgNb).setOrigin(0, 0);
+    let cardTxt = this.scene.add.text(18, 157, additionalData.name, { fill: '#000', fontSize: '12px', wordWrap: { width: 125 } }).setOrigin(0, 0);
+    let cardDate = this.scene.add.text(80, 210, additionalData.date, { fontStyle: 'bold' }).setOrigin(0.5, 0).setVisible(false);
+
+    container.cardData = additionalData;
+    container.add([cardBack, cardImg, cardTxt, cardDate]);
+    container.setScale(0.75);
+    container.setInteractive(new Phaser.Geom.Rectangle(container.width / 2, container.height / 2, container.width, container.height), Phaser.Geom.Rectangle.Contains);
+
+    return container;
   }
 }
 
@@ -37,6 +48,7 @@ export const cardsData = [
   { id: 23, name: 'Invention du thermomètre', creator: 'Galilée', collection: 'Invention', date: 1612 },
   { id: 24, name: 'Invention du code morse', creator: 'Samuel Finley Morse', collection: 'Invention', date: 1838 },
 ];
+
 /*
 export  const cardsData = [
   { id: 1, name: 'Le Parthénon', date: -447 },
@@ -52,4 +64,10 @@ export  const cardsData = [
   { id: 11, name: 'Le cercle de Stonehenge', date: -2800 },
   { id: 12, name: 'Les alignements de Carnac', date: -5000 }
 ];
+
+  render(x, y, imgNb, additionalData) {
+    let card = this.scene.add.sprite(x, y, 'cards', imgNb).setScale(0.75);
+    card.cardData = additionalData;
+    return card;
+  }
 */
