@@ -1,24 +1,34 @@
-export class Card {
-  constructor(scene) {
+export class Card extends Phaser.GameObjects.Container {
+  constructor(scene, x, y, imgNb, additionalData) {
+    super(scene);
+
     this.scene = scene;
+    this.x = x;
+    this.y = y;
+    this.cardData = additionalData;
+
+    const cardBack = this.scene.add.sprite(0, 0, 'cardBackground').setOrigin(0, 0);
+    const cardImg = this.scene.add.sprite(16, 15, 'cardImg', imgNb).setOrigin(0, 0);
+    const cardTxt = this.scene.add.text(18, 157, this.cardData.name, { fill: '#000', fontSize: '12px', wordWrap: { width: 125 } }).setOrigin(0, 0);
+    const cardDate = this.scene.add.text(80, 210, this.cardData.date, { fontStyle: 'bold' }).setOrigin(0.5, 0).setVisible(false);
+
+    this.setSize(160, 240);
+    this.setScale(0.75);
+    this.add([cardBack, cardImg, cardTxt, cardDate]);
+    this.setInteractive(new Phaser.Geom.Rectangle(this.width / 2, this.height / 2, this.width, this.height), Phaser.Geom.Rectangle.Contains);
+
+    this.on('pointerover', () => {
+      if (this.parentContainer) {
+        this.parentContainer.bringToTop(this);
+      }
+      this.setScale(1);
+    });
+
+    this.on('pointerout', () => this.setScale(0.75));
+
+    this.scene.add.existing(this);
   }
 
-  render(x, y, imgNb, additionalData) {
-    let container = this.scene.add.container(x, y);
-    container.setSize(160, 240);
-
-    let cardBack = this.scene.add.sprite(0, 0, 'cardBackground').setOrigin(0, 0);
-    let cardImg = this.scene.add.sprite(16, 15, 'cardImg', imgNb).setOrigin(0, 0);
-    let cardTxt = this.scene.add.text(18, 157, additionalData.name, { fill: '#000', fontSize: '12px', wordWrap: { width: 125 } }).setOrigin(0, 0);
-    let cardDate = this.scene.add.text(80, 210, additionalData.date, { fontStyle: 'bold' }).setOrigin(0.5, 0).setVisible(false);
-
-    container.cardData = additionalData;
-    container.add([cardBack, cardImg, cardTxt, cardDate]);
-    container.setScale(0.75);
-    container.setInteractive(new Phaser.Geom.Rectangle(container.width / 2, container.height / 2, container.width, container.height), Phaser.Geom.Rectangle.Contains);
-
-    return container;
-  }
 }
 
 export const cardsData = [

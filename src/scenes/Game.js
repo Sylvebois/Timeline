@@ -25,7 +25,7 @@ export default class Game extends Phaser.Scene {
     // Intialize the zones
     this.zonesManager = new ZonesManager(this);
     this.background = this.zonesManager.renderBackground('background');
-    this.dropZone = this.zonesManager.addZone(200 + this.cardWidth * 4, this.game.config.height / 2, this.cardWidth * 8, this.cardHeight + this.cardHeight / 2, 'dropZone');
+    this.dropZone = this.zonesManager.addZone(735, this.game.config.height / 2, this.cardWidth * 9, this.cardHeight + this.cardHeight / 2, 'dropZone');
     this.deckZone = this.zonesManager.addContainer(10, 135, this.cardWidth, this.cardHeight, 'deckZone');
     this.trashZone = this.zonesManager.addContainer(10, 385, this.cardWidth, this.cardHeight, 'trashZone');
     this.playerOne = this.zonesManager.addContainer(200, 510, this.cardWidth * 4, this.cardHeight, 'playerOne');
@@ -94,17 +94,6 @@ export default class Game extends Phaser.Scene {
         this.currentPlayer = this.switchActivePlayer();
       }
     })
-
-    this.input.on('pointerover', function (pointer, gameObject) {
-      if (gameObject[0].parentContainer) {
-        gameObject[0].parentContainer.bringToTop(gameObject[0]);
-      }
-      gameObject[0].setScale(1);
-    });
-
-    this.input.on('pointerout', function (pointer, gameObject) {
-      gameObject[0].setScale(0.75);
-    });
   }
   
   switchActivePlayer(initialDeal = false) {

@@ -13,9 +13,8 @@ export default class CardsManager {
    * @param {Phaser.GameObjects.Container} deck - The deck container
    */
   createDeck(deck) {
-    let card = new Card(this.scene);
     let mixedData = Phaser.Math.RND.shuffle(cardsData);
-    mixedData.forEach((data, index) => deck.add(card.render(index * 2, index * 2, data.id, data).disableInteractive()))
+    mixedData.forEach((data, index) => deck.add(new Card(this.scene, index * 2, index * 2, data.id, data).disableInteractive()))
   }
 
   /**
@@ -33,6 +32,9 @@ export default class CardsManager {
         card.setPosition(cardIndex * this.cardWidth, y);
       })
     })
+
+    this.placeCard(deck.last, 0, dropZone);
+    deck.remove(deck.last);
   }
 
   /**
