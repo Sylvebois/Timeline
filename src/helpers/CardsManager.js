@@ -40,7 +40,7 @@ export default class CardsManager {
   /**
    * When a card is placed on the wrong place, move it to the trash stack.
    * 
-   * @param {Phaser.GameObjects} card - The card to be moved to the trash container
+   * @param {Phaser.GameObjects.Container} card - The card to be moved to the trash container
    * @param {Phaser.GameObjects.Container} trash - The trash container
    */
   moveToTrash(card, trash) {
@@ -83,7 +83,7 @@ export default class CardsManager {
 
   /**
    * 
-   * @param {Phaser.GameObjects} card 
+   * @param {Phaser.GameObjects.Container} card 
    * @param {Number} index 
    * @param {Phaser.GameObjects.Zone} dropZone 
    */
@@ -117,19 +117,19 @@ export default class CardsManager {
    * Else, returns -1.
    * 
    * @param {Number} pointerX - The X position of the pointer when the drop occured
-   * @param {Phaser.GameObjects} cardDropped - The card that has been dropped into the zone 
+   * @param {Phaser.GameObjects.Container} cardDropped - The card that has been dropped into the zone 
    * @param {Phaser.GameObjects[]} cardsPlaced - An array of cards already present into the zone
    * @returns The index where the card should be put in the array or -1
    */
   getDroppedCardIndex(pointerX, cardDropped, cardsPlaced) {
-    let cardsPlacedLength = cardsPlaced.length;
+    const cardsPlacedLength = cardsPlaced.length;
 
     if (!cardsPlacedLength) {
       return 0;
     }
     else {
       let cardDate = cardDropped.cardData.date;
-      let droppedIndex = cardsPlaced.findIndex(card => pointerX >= (card.x - card.width / 2) && pointerX <= (card.x + card.width / 2));
+      let droppedIndex = cardsPlaced.findIndex(card => pointerX >= card.x && pointerX <= (card.x + card.width));
 
       // If dropped on the first half of the first card or before
       if (droppedIndex <= 0 && pointerX < cardsPlaced[0].x && cardDate < cardsPlaced[0].cardData.date) {
