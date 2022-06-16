@@ -29,7 +29,7 @@ export default class Menu extends Phaser.Scene {
     this.menuZone.add([
       this.add.text(this.menuZone.width / 2, 10, 'Nouveau', fontData).setOrigin(0.5, 0)
         .setInteractive()
-        .on('pointerdown', () => { this.scene.start('Game') }),
+        .on('pointerdown', () => { this.scene.start('GameParams') }),
       this.add.text(this.menuZone.width / 2, this.menuZone.height / 2, 'Règles', fontData).setOrigin(0.5, 0.5)
         .setInteractive()
         .on('pointerdown', () => { this.scene.start('Text', { textType: 'rules' }) }),

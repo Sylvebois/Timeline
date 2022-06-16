@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import Menu from './scenes/Menu';
+import GameParams from './scenes/GameParams';
 import Game from './scenes/Game';
 import TextOnly from './scenes/TextOnly';
 
@@ -14,7 +15,7 @@ const config = {
     mode : Phaser.Scale.FIT,
     autoCenter : Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Menu, Game, TextOnly],
+  scene: [Menu, GameParams, Game, TextOnly],
 };
 
 const game = new Phaser.Game(config);
