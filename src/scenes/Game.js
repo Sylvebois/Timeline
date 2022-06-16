@@ -1,9 +1,9 @@
 import CardsManager from '../helpers/CardsManager';
 import ZonesManager from '../helpers/ZonesManager';
 
-import backgroundImg from '../assets/background.png';
-import cardBackground from '../assets/cardBackground.png';
-import cardImg from '../assets/cardImg.png';
+import backgroundImg from '../assets/Game/background.png';
+import cardBackground from '../assets/Game/cardBackground.png';
+import cardImg from '../assets/Game/cardImg.png';
 
 export default class Game extends Phaser.Scene {
   constructor() {
